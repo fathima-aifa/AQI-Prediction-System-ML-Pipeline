@@ -1,0 +1,26 @@
+model:
+  random_state: 42
+
+training:
+  test_size: 0.2
+  cv: 3
+  scoring: r2
+
+random_forest:
+  n_estimators: 150
+  max_depth: null
+  min_samples_split: 2
+
+grid_search:
+  n_estimators:
+    - 100
+    - 150
+
+  max_depth:
+    - null
+    - 10
+    - 20
+
+  min_samples_split:
+    - 2
+    - 5

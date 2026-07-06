@@ -1,0 +1,33 @@
+data_ingestion:
+  raw_data_path: data/raw/data.csv
+  train_data_path: data/processed/train.csv
+  test_data_path: data/processed/test.csv
+
+model:
+  random_state: 42
+  test_size: 0.2
+
+features:
+  target_column: aqi_index
+
+  numerical_features:
+    - temp_c
+    - humidity
+    - pressure_mb
+    - windspeed_kph
+    - pm2_5
+    - pm10
+    - co
+    - no2
+    - hour
+    - month
+
+  categorical_features:
+    - location
+    - condition_text
+
+data_transformation:
+  preprocessor_path: artifacts/preprocessor.pkl
+
+model_trainer:
+  model_path: artifacts/model.pkl

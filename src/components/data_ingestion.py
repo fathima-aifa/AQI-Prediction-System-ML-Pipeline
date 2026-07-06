@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+from src.utils import read_yaml
 from sklearn.model_selection import train_test_split
 
 
@@ -9,9 +10,14 @@ class DataIngestion:
     """
 
     def __init__(self):
-        self.raw_data_path = "data/raw/data.csv"
-        self.train_data_path = "data/processed/train.csv"
-        self.test_data_path = "data/processed/test.csv"
+        config = read_yaml("config/config.yaml")
+
+        self.raw_data_path = config["data"]["raw_data_path"]
+        self.train_data_path = config["data"]["train_data_path"]
+        self.test_data_path = config["data"]["test_data_path"]
+
+        self.test_size = config["model"]["test_size"]
+        self.random_state = config["model"]["random_state"]
 
     def initiate_data_ingestion(self):
         print("Starting Data Ingestion...")
@@ -25,7 +31,7 @@ class DataIngestion:
         train_df, test_df = train_test_split(
             df,
             test_size=0.20,
-            random_state=42
+            random_state=self.random_state
         )
 
         # Create processed folder if it doesn't exist
