@@ -1,5 +1,16 @@
 import os
 import joblib
+import mlflow
+import mlflow.sklearn
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+mlflow.set_tracking_uri(
+    os.getenv("MLFLOW_TRACKING_URI")
+)
+
 
 from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
@@ -25,142 +36,162 @@ class ModelTrainer:
     def initiate_model_training(self):
 
         print("Starting Model Training...")
+        
+        mlflow.set_experiment("AQI Prediction")
 
-        transformer = DataTransformation()
+        with mlflow.start_run():
 
-        X_train, X_test, y_train, y_test, _ = (
-            transformer.initiate_data_transformation()
-        )
+            transformer = DataTransformation()
 
-        # -----------------------------------
-        # Models
-        # -----------------------------------
-
-        models = {
-
-            "Linear Regression":
-                LinearRegression(),
-
-            "Decision Tree":
-                DecisionTreeRegressor(
-                    random_state=self.params["model"]["random_state"]
-                ),
-
-            "Random Forest":
-                RandomForestRegressor(
-                    random_state=self.params["model"]["random_state"]
-                ),
-
-            "XGBoost":
-                XGBRegressor(
-                    random_state=self.params["model"]["random_state"]
-                )
-
-        }
-
-        results = {}
-
-        print("\nTraining Models...\n")
-
-        for name, model in models.items():
-
-            model.fit(X_train, y_train)
-
-            prediction = model.predict(X_test)
-
-            mae, rmse, r2 = evaluate_model(
-                y_test,
-                prediction
+            X_train, X_test, y_train, y_test, _ = (
+               transformer.initiate_data_transformation()
             )
 
-            results[name] = {
+            # -----------------------------------
+            # Models
+            # -----------------------------------
 
-                "model": model,
-                "MAE": mae,
-                "RMSE": rmse,
-                "R2": r2
+            models = {
+
+                "Linear Regression":
+                    LinearRegression(),
+
+                "Decision Tree":
+                    DecisionTreeRegressor(
+                        random_state=self.params["model"]["random_state"]
+                    ),
+
+                "Random Forest":
+                    RandomForestRegressor(
+                        random_state=self.params["model"]["random_state"]
+                    ),
+
+                "XGBoost":
+                    XGBRegressor(
+                        random_state=self.params["model"]["random_state"]
+                    )
 
             }
 
-            print(f"{name}")
-            print(f"MAE : {mae:.4f}")
-            print(f"RMSE: {rmse:.4f}")
-            print(f"R2  : {r2:.4f}")
-            print("-" * 40)
+            results = {}
 
-        # -----------------------------------
-        # Best Model
-        # -----------------------------------
+            print("\nTraining Models...\n")
 
-        best_model_name = max(
-            results,
-            key=lambda x: results[x]["R2"]
-        )
+            for name, model in models.items():
 
-        print(f"\nBest Model: {best_model_name}")
+                model.fit(X_train, y_train)
 
-        # -----------------------------------
-        # Hyperparameter Tuning
-        # -----------------------------------
+                prediction = model.predict(X_test)
 
-        if best_model_name == "Random Forest":
+                mae, rmse, r2 = evaluate_model(
+                    y_test,
+                    prediction
+                )
 
-            print("\nPerforming Hyperparameter Tuning...")
+                mlflow.log_metric(f"{name}_MAE", mae)
+                mlflow.log_metric(f"{name}_RMSE", rmse)
+                mlflow.log_metric(f"{name}_R2", r2)
 
-            rf = RandomForestRegressor(
-                random_state=self.params["model"]["random_state"]
+                results[name] = {
+
+                    "model": model,
+                    "MAE": mae,
+                    "RMSE": rmse,
+                    "R2": r2
+
+                }
+
+                print(f"{name}")
+                print(f"MAE : {mae:.4f}")
+                print(f"RMSE: {rmse:.4f}")
+                print(f"R2  : {r2:.4f}")
+                print("-" * 40)
+
+            # -----------------------------------
+            # Best Model
+            # -----------------------------------
+
+            best_model_name = max(
+                results,
+                key=lambda x: results[x]["R2"]
             )
 
-            grid = GridSearchCV(
+            print(f"\nBest Model: {best_model_name}")
 
-                estimator=rf,
+            mlflow.log_param("best_model", best_model_name)
 
-                param_grid=self.params["grid_search"],
+            # -----------------------------------
+            # Hyperparameter Tuning
+            # -----------------------------------
 
-                cv=self.params["training"]["cv"],
+            if best_model_name == "Random Forest":
 
-                scoring=self.params["training"]["scoring"],
+                print("\nPerforming Hyperparameter Tuning...")
 
-                n_jobs=-1
+                rf = RandomForestRegressor(
+                    random_state=self.params["model"]["random_state"]
+                )
 
+                grid = GridSearchCV(
+
+                    estimator=rf,
+
+                    param_grid=self.params["grid_search"],
+
+                    cv=self.params["training"]["cv"],
+
+                    scoring=self.params["training"]["scoring"],
+
+                    n_jobs=-1
+
+                )
+
+                grid.fit(X_train, y_train)
+
+                best_model = grid.best_estimator_
+
+                print("\nBest Parameters")
+
+                print(grid.best_params_)
+
+                mlflow.log_params(grid.best_params_)
+
+                prediction = best_model.predict(X_test)
+                
+                mae, rmse, r2 = evaluate_model(
+                    y_test,
+                    prediction
+                )
+
+                mlflow.log_metric("Tuned_RF_MAE", mae)
+                mlflow.log_metric("Tuned_RF_RMSE", rmse)
+                mlflow.log_metric("Tuned_RF_R2", r2)
+
+                print("\nTuned Random Forest")
+
+                print(f"MAE : {mae:.4f}")
+                print(f"RMSE: {rmse:.4f}")
+                print(f"R2  : {r2:.4f}")
+
+            else:
+
+                best_model = results[best_model_name]["model"]
+
+            os.makedirs(os.path.dirname(self.model_path), exist_ok=True)
+
+            joblib.dump(
+                best_model,
+                self.model_path
             )
 
-            grid.fit(X_train, y_train)
-
-            best_model = grid.best_estimator_
-
-            print("\nBest Parameters")
-
-            print(grid.best_params_)
-
-            prediction = best_model.predict(X_test)
-            
-            mae, rmse, r2 = evaluate_model(
-                 y_test,
-                 prediction
+            mlflow.sklearn.log_model(
+                sk_model=best_model,
+                name="model"
             )
-            
 
-            print("\nTuned Random Forest")
+            print("\nModel saved successfully.")
 
-            print(f"MAE : {mae:.4f}")
-            print(f"RMSE: {rmse:.4f}")
-            print(f"R2  : {r2:.4f}")
-
-        else:
-
-            best_model = results[best_model_name]["model"]
-
-        os.makedirs(os.path.dirname(self.model_path), exist_ok=True)
-
-        joblib.dump(
-            best_model,
-            self.model_path
-        )
-
-        print("\nModel saved successfully.")
-
-        return self.model_path
+            return self.model_path
 
 
 if __name__ == "__main__":

@@ -1,12 +1,15 @@
 import streamlit as st
 import pandas as pd
-import joblib
+
 from datetime import datetime
-import matplotlib.pyplot as plt
 import calendar
 
-# Load model
-pipeline = joblib.load("aqi_pipeline.pkl")
+from src.pipeline.predict_pipeline import (
+    PredictPipeline,
+    CustomData
+)
+
+
 
 st.set_page_config(page_title="AQI Predictor", layout="wide")
 
@@ -61,23 +64,28 @@ st.markdown("---")
 
 # --- PREDICTION ---
 if st.button("🚀 Predict AQI"):
+    custom_data = CustomData(
 
-    input_data = pd.DataFrame([{
-        "location": location,
-        "condition_text": condition,
-        "temp_c": temp,
-        "humidity": humidity,
-        "pressure_mb": pressure,
-        "windspeed_kph": wind,
-        "pm2_5": pm25,
-        "pm10": pm10,
-        "co": co,
-        "no2": no2,
-        "hour": current_hour,
-        "month": current_month
-    }])
+        location=location,
+        condition_text=condition,
 
-    prediction = pipeline.predict(input_data)[0]
+        temp_c=temp,
+        humidity=humidity,
+        pressure_mb=pressure,
+        windspeed_kph=wind,
+
+        pm2_5=pm25,
+        pm10=pm10,
+        co=co,
+        no2=no2
+
+    )
+
+    input_data = custom_data.get_data_as_dataframe()
+
+    predict_pipeline = PredictPipeline()
+
+    prediction = predict_pipeline.predict(input_data)[0]
 
     # --- RESULT DISPLAY ---
     st.markdown("## 🌫️ AQI Result")
