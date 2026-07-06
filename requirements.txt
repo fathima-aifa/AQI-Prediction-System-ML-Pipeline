@@ -1,7 +1,11 @@
-streamlit
-pandas
 numpy
+pandas
 scikit-learn
-joblib
-matplotlib
 xgboost
+streamlit
+matplotlib
+mlflow
+dagshub
+joblib
+PyYAML
+python-dotenv
