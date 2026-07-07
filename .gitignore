@@ -12,3 +12,5 @@ artifacts/
 .DS_Store
 
 *.pkl
+
+.dvc/config
