@@ -1,7 +1,15 @@
 #  AQI Prediction System (ML + MLOps Pipeline)
 
-## 📌 Overview
-This project is an end-to-end Machine Learning system that predicts the **Air Quality Index (AQI)** based on atmospheric and environmental conditions. It features a complete ML pipeline from data ingestion to evaluation, deployed as an interactive web application.
+#### A reproducible end-to-end machine learning pipeline built using DVC, MLflow, and DagsHub.
+
+##  Overview
+
+his repository extends my original **AQI Prediction System** by transforming it into a reproducible end-to-end MLOps workflow.
+
+While the original project focused on data analysis, model development, evaluation, and deployment using Streamlit, this repository focuses on automating and managing the complete machine learning lifecycle.
+
+The project introduces modular pipeline components, experiment tracking, dataset and artifact versioning, and reproducible execution using modern MLOps tools such as **DVC**, **MLflow**, and **DagsHub**.
+
 
 ---
 
@@ -9,55 +17,64 @@ This project is an end-to-end Machine Learning system that predicts the **Air Qu
 Air pollution significantly impacts public health and environmental safety. The goal of this project is to:
 > Predict real-time AQI values using environmental features like temperature, humidity, pressure, wind speed, and pollutant concentrations ($PM_{2.5}$, $PM_{10}$, $CO$, $NO_2$).
 
----
 
-##  Machine Learning Models Used
-The following regression models were trained, tuned, and compared:
-* Linear Regression
-* Decision Tree Regressor
-* XGBoost Regressor
-* **Random Forest Regressor** ⭐ *(Selected Best Model)*
 
-###  Best Model Performance
-The **Random Forest Regressor** achieved the highest accuracy across all metrics:
-* **$R^2$ Score:** ~0.92
-* **Mean Absolute Error (MAE):** ~35
-* **Root Mean Squared Error (RMSE):** ~91
+##  Objectives
+This project demonstrates how to:
+* build modular ML pipelines
+* automate preprocessing and model training
+* version datasets and artifacts
+* track experiments
+* reproduce results consistently
+* manage machine learning workflows
+  
 
----
-
-##  MLOps Integration (MLflow & DagsHub)
-* **MLflow:** Used for experiment tracking, logging hyperparameter runs, and tracking performance metrics ($MAE$, $RMSE$, $R^2$) to easily find the best model.
-* **DagsHub:** Acts as our centralized remote platform, hosting our remote MLflow tracking server and storing versioned models and pipeline artifacts.
-
----
 
 ##  Tech Stack
 * **Core Language:** Python(version: 3.10) 
 * **Data & Machine Learning:** Pandas, NumPy, Scikit-learn, XGBoost, Joblib
 * **Experiment Tracking & MLOps:** MLflow, DVC, DagsHub
+* **Environment Management:** Conda
 * **Web Deployment:** Streamlit
 
 ---
+## Repository  Structure
 
-## 🚀 How to Run the Project
-
-###  Setup & Dependencies
-Clone the repository and install all required libraries:
-```bash
-git clone [https://github.com/fathima-aifa/AQI-Prediction-System.git](https://github.com/fathima-aifa/AQI-Prediction-System.git)
-cd AQI-Prediction-System
-pip install -r requirements.txt
+```text
+AQI-Prediction-System-ML-Pipeline
+│
+├── notebooks/
+│   ├── eda_analysis.ipynb       → Exploratory Data Analysis (EDA) and data visualization.
+│   └── model_building.ipynb     → Feature engineering, model training, evaluation, and model selection.
+│
+├── src/
+│   ├── components/              → Modular pipeline components for data ingestion, transformation, and model training.
+│   ├── pipeline/                → Prediction and inference pipeline.
+│   └── utils.py                 → Utility functions used across the project.
+│
+├── config/                      → Configuration files for the pipeline.
+├── data/                        → Raw and processed datasets managed with DVC.
+├── artifacts/                   → Saved preprocessing objects and trained models.
+│
+├── dvc.yaml                     → Defines the complete DVC pipeline workflow.
+├── dvc.lock                     → Records pipeline stages and tracked outputs.
+├── params.yaml                  → Hyperparameter configuration.
+├── app.py                       → Streamlit application for AQI prediction.
+├── requirements.txt             → Project dependencies.
+└── README.md                    → Project documentation.
 ```
+>**Note**
+> The notebooks document the initial development phase of the project, including exploratory data analysis, feature engineering, model comparison, and evaluation. Once the workflow was finalized, it was converted into a modular and reproducible machine learning pipeline using DVC and MLflow.
 
-###  Train the Pipeline
-Run the model trainer component to process the data and save the best model:
-```bash
-python -m src.components.model_trainer
-```
+## Models Used
 
-###  Launch the App
-Run the Streamlit interface locally:
-```bash
-streamlit run app.py
-```
+The following regression models were trained and evaluated:
+
+- Linear Regression
+- Decision Tree Regressor
+- Random Forest Regressor
+- XGBoost Regressor
+
+The best-performing model was selected based on evaluation metrics and further optimized using GridSearchCV for hyperparameter tuning.
+
+
