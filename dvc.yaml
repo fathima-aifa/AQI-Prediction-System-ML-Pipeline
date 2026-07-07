@@ -19,6 +19,10 @@ stages:
       - data/processed/test.csv
     outs:
       - artifacts/preprocessor.pkl
+      - artifacts/X_train.npy
+      - artifacts/X_test.npy
+      - artifacts/y_train.npy
+      - artifacts/y_test.npy
 
   model_training:
     cmd: python -m src.components.model_trainer
@@ -28,7 +32,9 @@ stages:
       - params.yaml
       - config/config.yaml
       - artifacts/preprocessor.pkl
-      - data/processed/train.csv
-      - data/processed/test.csv
+      - artifacts/X_train.npy
+      - artifacts/X_test.npy
+      - artifacts/y_train.npy
+      - artifacts/y_test.npy
     outs:
       - artifacts/model.pkl

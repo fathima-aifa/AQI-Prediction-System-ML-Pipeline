@@ -44,29 +44,53 @@ stages:
       md5: 56da94a539738d0346dca29e46675213
       size: 4808
     outs:
+    - path: artifacts/X_test.npy
+      hash: md5
+      md5: 91c91f48ac4f9adad1997d56e0812101
+      size: 2102528
+    - path: artifacts/X_train.npy
+      hash: md5
+      md5: 2bd4f99b44012457b8fba85277271bc2
+      size: 8409728
     - path: artifacts/preprocessor.pkl
       hash: md5
       md5: 54784efe52475eaabcf196910b28a39c
       size: 3800
+    - path: artifacts/y_test.npy
+      hash: md5
+      md5: 1dcf633d85220a0593c1c281edd774fe
+      size: 84224
+    - path: artifacts/y_train.npy
+      hash: md5
+      md5: f5f17da2e931687af95356de0adf2004
+      size: 336512
   model_training:
     cmd: python -m src.components.model_trainer
     deps:
+    - path: artifacts/X_test.npy
+      hash: md5
+      md5: 91c91f48ac4f9adad1997d56e0812101
+      size: 2102528
+    - path: artifacts/X_train.npy
+      hash: md5
+      md5: 2bd4f99b44012457b8fba85277271bc2
+      size: 8409728
     - path: artifacts/preprocessor.pkl
       hash: md5
       md5: 54784efe52475eaabcf196910b28a39c
       size: 3800
+    - path: artifacts/y_test.npy
+      hash: md5
+      md5: 1dcf633d85220a0593c1c281edd774fe
+      size: 84224
+    - path: artifacts/y_train.npy
+      hash: md5
+      md5: f5f17da2e931687af95356de0adf2004
+      size: 336512
     - path: config/config.yaml
       hash: md5
       md5: c29a029f33f6fed0fb6ab0da093cf4f6
       size: 741
-    - path: data/processed/test.csv
-      hash: md5
-      md5: 3e922c26110eff4cebd12558b15e0bd7
-      size: 1143077
-    - path: data/processed/train.csv
-      hash: md5
-      md5: a9a9ee7d40efd401e0f05f5ea23b41e4
-      size: 4572743
     - path: params.yaml
       hash: md5
       md5: 24261222cf84d30bf28a0ba70e047087
