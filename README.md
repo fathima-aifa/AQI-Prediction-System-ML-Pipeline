@@ -77,4 +77,69 @@ The following regression models were trained and evaluated:
 
 The best-performing model was selected based on evaluation metrics and further optimized using GridSearchCV for hyperparameter tuning.
 
+## 🔄 MLOps Workflow
+
+To improve reproducibility and experiment management, this project integrates **MLflow** and **DVC**.
+
+Together they provide:
+
+- End-to-end experiment tracking and model comparison.
+- Version control for datasets, models, and pipeline artifacts.
+- A reproducible machine learning pipeline that can be executed using `dvc repro`.
+
+### View on DagsHub
+
+DVC Pipeline & Repository 
+
+https://dagshub.com/fathimathulaifa03/AQI-Prediction-System
+
+---
+## How to Run
+
+### Clone the repository
+
+```bash
+git clone <repository-url>
+cd AQI-Prediction-System-ML-Pipeline
+```
+
+### Create a virtual environment
+
+```bash
+conda create -n aqi python=3.11
+conda activate aqi
+```
+
+### Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### Execute the pipeline
+
+```bash
+dvc repro
+```
+
+### Launch the application
+
+```bash
+streamlit run app.py
+```
+
+
+
+## Future Enhancements
+
+Possible improvements include:
+
+- Automate model retraining when new data becomes available.
+- Integrate CI/CD for automated testing and deployment.
+- Containerize the application using Docker.
+- Deploy the pipeline on cloud platforms.
+- Add data validation before model training.
+- Monitor model performance and data drift in production.
+
+
 
