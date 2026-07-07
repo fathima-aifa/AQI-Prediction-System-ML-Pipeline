@@ -29,5 +29,10 @@ features:
 data_transformation:
   preprocessor_path: artifacts/preprocessor.pkl
 
+  x_train_path: artifacts/X_train.npy
+  x_test_path: artifacts/X_test.npy
+  y_train_path: artifacts/y_train.npy
+  y_test_path: artifacts/y_test.npy
+
 model_trainer:
   model_path: artifacts/model.pkl

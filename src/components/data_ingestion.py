@@ -12,9 +12,9 @@ class DataIngestion:
     def __init__(self):
         config = read_yaml("config/config.yaml")
 
-        self.raw_data_path = config["data"]["raw_data_path"]
-        self.train_data_path = config["data"]["train_data_path"]
-        self.test_data_path = config["data"]["test_data_path"]
+        self.raw_data_path = config["data_ingestion"]["raw_data_path"]
+        self.train_data_path = config["data_ingestion"]["train_data_path"]
+        self.test_data_path = config["data_ingestion"]["test_data_path"]
 
         self.test_size = config["model"]["test_size"]
         self.random_state = config["model"]["random_state"]

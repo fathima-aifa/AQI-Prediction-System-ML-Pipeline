@@ -1,0 +1,7 @@
+[core]
+    remote = origin
+['remote "origin"']
+    url = https://dagshub.com/fathimathulaifa03/AQI-Prediction-System.dvc
+    auth = basic
+    user = fathimathulaifa03
+    password = ee11ccc5d660785aea5f944b77a51cd3764725fc

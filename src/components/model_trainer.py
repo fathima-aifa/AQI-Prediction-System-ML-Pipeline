@@ -1,5 +1,6 @@
 import os
 import joblib
+import numpy as np
 import mlflow
 import mlflow.sklearn
 
@@ -20,7 +21,6 @@ from xgboost import XGBRegressor
 
 from sklearn.model_selection import GridSearchCV
 
-from src.components.data_transformation import DataTransformation
 from src.utils import read_yaml, evaluate_model
 
 
@@ -30,7 +30,13 @@ class ModelTrainer:
 
         self.params = read_yaml("params.yaml")
         self.config = read_yaml("config/config.yaml")
+
         self.model_path = self.config["model_trainer"]["model_path"]
+
+        self.x_train_path = self.config["data_transformation"]["x_train_path"]
+        self.x_test_path = self.config["data_transformation"]["x_test_path"]
+        self.y_train_path = self.config["data_transformation"]["y_train_path"]
+        self.y_test_path = self.config["data_transformation"]["y_test_path"]
 
 
     def initiate_model_training(self):
@@ -41,12 +47,13 @@ class ModelTrainer:
 
         with mlflow.start_run():
 
-            transformer = DataTransformation()
+            print("Loading transformed data...")
 
-            X_train, X_test, y_train, y_test, _ = (
-               transformer.initiate_data_transformation()
-            )
-
+            X_train = np.load(self.x_train_path, allow_pickle=True)
+            X_test = np.load(self.x_test_path, allow_pickle=True)
+            y_train = np.load(self.y_train_path, allow_pickle=True)
+            y_test = np.load(self.y_test_path, allow_pickle=True)
+            
             # -----------------------------------
             # Models
             # -----------------------------------

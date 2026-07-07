@@ -26,6 +26,11 @@ class DataTransformation:
        self.categorical_cols = config["features"]["categorical_features"]
 
        self.preprocessor_path = config["data_transformation"]["preprocessor_path"]
+       
+       self.x_train_path = config["data_transformation"]["x_train_path"]
+       self.x_test_path = config["data_transformation"]["x_test_path"]
+       self.y_train_path = config["data_transformation"]["y_train_path"]
+       self.y_test_path = config["data_transformation"]["y_test_path"]
 
     def initiate_data_transformation(self):
 
@@ -106,6 +111,30 @@ class DataTransformation:
         X_test_processed = preprocessor.transform(X_test)
 
         # ==========================
+        # Save Transformed Data
+        # ==========================
+
+        np.save(
+            self.x_train_path,
+            X_train_processed
+        )
+
+        np.save(
+            self.x_test_path,
+            X_test_processed
+        )
+
+        np.save(
+            self.y_train_path,
+            y_train.to_numpy()
+        )
+
+        np.save(
+            self.y_test_path,
+            y_test.to_numpy()
+        )
+
+        # ==========================
         # Save Preprocessor
         # ==========================
 
@@ -121,10 +150,10 @@ class DataTransformation:
         print("Transformation Completed.")
 
         return (
-            X_train_processed,
-            X_test_processed,
-            y_train,
-            y_test,
+            self.x_train_path,
+            self.x_test_path,
+            self.y_train_path,
+            self.y_test_path,
             self.preprocessor_path
         )
 
@@ -133,11 +162,13 @@ if __name__ == "__main__":
 
     transformer = DataTransformation()
 
-    X_train, X_test, y_train, y_test, preprocessor = (
+    x_train_path, x_test_path, y_train_path, y_test_path, preprocessor = (
         transformer.initiate_data_transformation()
     )
 
     print("\nData Transformation Completed Successfully!")
 
-    print("Training Samples :", X_train.shape)
-    print("Testing Samples  :", X_test.shape)
+    print("X Train :", x_train_path)
+    print("X Test  :", x_test_path)
+    print("Y Train :", y_train_path)
+    print("Y Test  :", y_test_path)

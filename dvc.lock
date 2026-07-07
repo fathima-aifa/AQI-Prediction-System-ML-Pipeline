@@ -1,0 +1,86 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python -m src.components.data_ingestion
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: c29a029f33f6fed0fb6ab0da093cf4f6
+      size: 741
+    - path: data/raw/data.csv
+      hash: md5
+      md5: cda064ed6dea723f5c0b73f3b662b302
+      size: 5715687
+    - path: src/components/data_ingestion.py
+      hash: md5
+      md5: 45ab6ca00ed010543db7052c02c1d445
+      size: 1862
+    outs:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 3e922c26110eff4cebd12558b15e0bd7
+      size: 1143077
+    - path: data/processed/train.csv
+      hash: md5
+      md5: a9a9ee7d40efd401e0f05f5ea23b41e4
+      size: 4572743
+  data_transformation:
+    cmd: python -m src.components.data_transformation
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: c29a029f33f6fed0fb6ab0da093cf4f6
+      size: 741
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 3e922c26110eff4cebd12558b15e0bd7
+      size: 1143077
+    - path: data/processed/train.csv
+      hash: md5
+      md5: a9a9ee7d40efd401e0f05f5ea23b41e4
+      size: 4572743
+    - path: src/components/data_transformation.py
+      hash: md5
+      md5: 56da94a539738d0346dca29e46675213
+      size: 4808
+    outs:
+    - path: artifacts/preprocessor.pkl
+      hash: md5
+      md5: 54784efe52475eaabcf196910b28a39c
+      size: 3800
+  model_training:
+    cmd: python -m src.components.model_trainer
+    deps:
+    - path: artifacts/preprocessor.pkl
+      hash: md5
+      md5: 54784efe52475eaabcf196910b28a39c
+      size: 3800
+    - path: config/config.yaml
+      hash: md5
+      md5: c29a029f33f6fed0fb6ab0da093cf4f6
+      size: 741
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 3e922c26110eff4cebd12558b15e0bd7
+      size: 1143077
+    - path: data/processed/train.csv
+      hash: md5
+      md5: a9a9ee7d40efd401e0f05f5ea23b41e4
+      size: 4572743
+    - path: params.yaml
+      hash: md5
+      md5: 24261222cf84d30bf28a0ba70e047087
+      size: 308
+    - path: src/components/model_trainer.py
+      hash: md5
+      md5: d611a4dd8bd30fa8a825b32846e5ec6c
+      size: 5736
+    - path: src/utils.py
+      hash: md5
+      md5: 4c5510dcf585bd8ec958016ec622255d
+      size: 526
+    outs:
+    - path: artifacts/model.pkl
+      hash: md5
+      md5: 763f71c0f3dc175dc04405bd3c3a4246
+      size: 364989025
