@@ -4,7 +4,7 @@
 
 ##  Overview
 
-his repository extends my original **AQI Prediction System** by transforming it into a reproducible end-to-end MLOps workflow.
+This repository extends my original **AQI Prediction System** by transforming it into a reproducible end-to-end MLOps workflow.
 
 While the original project focused on data analysis, model development, evaluation, and deployment using Streamlit, this repository focuses on automating and managing the complete machine learning lifecycle.
 
